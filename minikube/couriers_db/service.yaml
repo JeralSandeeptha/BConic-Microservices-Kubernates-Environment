@@ -1,15 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: 
+  name: couriers-db-service
   namespace: production
 spec:
   selector:
-    app: couriers_db_pod
+    app: couriers-db-pod
   type: ClusterIP
   ports:
-  - name: MYAPP
-    protocol: TCP
-    port: 
-    targetPort: 
-    nodePort: 
+  - protocol: TCP
+    port: 5434
+    targetPort: 5432

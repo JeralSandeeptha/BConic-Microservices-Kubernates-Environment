@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: couriers-db-deployment
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: couriers-db-pod
+  template:
+    metadata:
+      labels:
+        app: couriers-db-pod
+        namespace: production
+    spec:
+      containers:
+        - image: postgres:13.22-alpine3.21
+          name: couriers-db-container
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: couriers_db
+            - name: POSTGRES_USER
+              value: jeral
+            - name: POSTGRES_PASSWORD
+              value: "1234"
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          volumeMounts:
+            - name: postgres-couriers-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-couriers-storage
+          persistentVolumeClaim:
+            claimName: couriers-db-pvc
