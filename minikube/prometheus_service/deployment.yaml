@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-deployment
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-pod
+  template:
+    metadata:
+      labels:
+        app: prometheus-pod
+    spec:
+      initContainers:
+        - name: volume-permissions-container
+          image: busybox
+          command: ["sh", "-c", "chown -R 1000:1000 /prometheus"]
+          securityContext:
+            runAsUser: 0  # Run as root to have permission to change ownership
+          volumeMounts:
+          - name: prometheus-storage
+            mountPath: /prometheus
+      containers:
+        - name: prometheus-container
+          image: prom/prometheus:latest
+          securityContext:
+            runAsUser: 1000  # ← MISSING THIS LINE - RUN AS USER 1000
+            runAsGroup: 1000 # ← ALSO ADD THIS FOR GROUP
+          args:
+            - '--config.file=/etc/prometheus/prometheus.yml'
+            - '--web.enable-lifecycle'
+            - '--storage.tsdb.path=/prometheus/'
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: prometheus-config
+              mountPath: /etc/prometheus
+            - name: prometheus-storage
+              mountPath: /prometheus/
+      volumes:
+        - name: prometheus-config
+          configMap:
+            name: prometheus-config
+        - name: prometheus-storage
+          persistentVolumeClaim:
+            claimName: prometheus-pvc
