@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  frontend-service-deployment
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-service-pod
+  template:
+    metadata:
+      labels:
+        app: frontend-service-pod
+    spec:
+      containers:
+        - name: frontend-service-container
+          image: jeralsandeeptha/bconic-frontend-service:4cef8834ee8f537c3cf6dc5996ff015b9bfb36d9
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: REACT_APP_BACKEND_GATEWAY_URL
+              value: http://api.bconic.com
+            - name: REACT_APP_BACKEND_USERS_URL
+              value: http://api.bconic.com/gateway/users/api/v1
+            - name: REACT_APP_BACKEND_COURIERS_URL
+              value: http://api.bconic.com/gateway/couriers/api/v1
+          ports:
+            - containerPort: 80
