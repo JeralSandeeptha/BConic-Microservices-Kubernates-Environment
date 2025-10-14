@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  gateway-service-deployment
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-service-pod
+  template:
+    metadata:
+      labels:
+        app: gateway-service-pod
+    spec:
+      containers:
+        - name: gateway-service-container
+          image: jeralsandeeptha/bconic-gateway-service:59c72f979b2cb0ef521602640749302dbf944373
+          env:
+            - name: PORT
+              value: "5000"
+            - name: NODE_ENV
+              value: production
+            - name: JWT_SECRET
+              value: secret
+            - name: USER_BASE_URL
+              value: http://api.bconic.com:5001
+            - name: COURIER_BASE_URL
+              value: http://api.bconic.com:5002
+          ports:
+            - containerPort: 5000

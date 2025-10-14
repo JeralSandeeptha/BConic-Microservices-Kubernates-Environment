@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: couriers-service-container
-          image: jeralsandeeptha/bconic-user-service:3e5f48582f3525de9b06d86b031a30d320d00924
+          image: jeralsandeeptha/bconic-courier-service:2f5565c0321c0a85e450cefdd0077f835fb4ce04
           env:
             - name: DATABASE_URL
               value: postgresql://jeral:1234@couriers-db-service.production.svc.cluster.local:5434/couriers_db
