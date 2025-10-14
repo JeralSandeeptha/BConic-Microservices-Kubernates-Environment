@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  couriers-service-deployment
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: couriers-service-pod
+  template:
+    metadata:
+      labels:
+        app: couriers-service-pod
+    spec:
+      containers:
+        - name: couriers-service-container
+          image: jeralsandeeptha/bconic-user-service:3e5f48582f3525de9b06d86b031a30d320d00924
+          env:
+            - name: DATABASE_URL
+              value: postgresql://jeral:1234@couriers-db-service.production.svc.cluster.local:5434/couriers_db
+            - name: PORT
+              value: "5002"
+            - name: NODE_ENV
+              value: production
+            - name: JWT_SECRET
+              value: secret
+            - name: USERS_SERVICE_URL
+              value: http://api.bconic.com:5000/gateway/users/api/v1
+          ports:
+            - containerPort: 5002
