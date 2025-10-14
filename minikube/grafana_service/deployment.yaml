@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-deployment
+  namespace: production
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: grafana-pod
+  template:
+    metadata:
+      name: grafana-pod
+      labels:
+        app: grafana-pod
+    spec:
+      initContainers:
+        - name: grafana-config-container
+          image: busybox
+          command: ['sh', '-c', 'mkdir -p /var/lib/grafana && chmod -R 777 /var/lib/grafana']
+          volumeMounts:
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
+      containers:
+        - image: grafana/grafana:latest
+          name: grafana-container
+          ports:
+            - containerPort: 3000
+          env:
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: admin123
+          volumeMounts:
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
+      volumes:
+        - name: grafana-storage
+          persistentVolumeClaim:
+            claimName: grafana-pvc
