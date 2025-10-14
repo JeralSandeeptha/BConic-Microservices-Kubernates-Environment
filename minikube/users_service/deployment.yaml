@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  users-service-deployment
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users-service-pod
+  template:
+    metadata:
+      labels:
+        app: users-service-pod
+    spec:
+      containers:
+        - name: users-service-container
+          image: jeralsandeeptha/bconic-user-service:3e5f48582f3525de9b06d86b031a30d320d00924
+          env:
+            - name: DATABASE_URL
+              value: postgresql://jeral:1234@users-db-service.production.svc.cluster.local:5431/users_db
+            - name: PORT
+              value: "5001"
+            - name: NODE_ENV
+              value: production
+            - name: JWT_SECRET
+              value: secret
+          ports:
+            - containerPort: 5001
