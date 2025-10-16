@@ -24,8 +24,8 @@ spec:
             - name: JWT_SECRET
               value: secret
             - name: USER_BASE_URL
-              value: http://api.bconic.com:5001
+              value: http://users-service-service.production.svc.cluster.local:5001
             - name: COURIER_BASE_URL
-              value: http://api.bconic.com:5002
+              value: http://couriers-service-service.production.svc.cluster.local:5002
           ports:
             - containerPort: 5000

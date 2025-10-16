@@ -1,0 +1,83 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bconic-ingress-service
+  namespace: production
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - host: bconic.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service-service
+                port:
+                  number: 80
+    - host: api.bconic.com
+      http:
+        paths:
+          - path: /gateway
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway-service-service
+                port:
+                  number: 5000
+          - path: /users
+            pathType: Prefix
+            backend:
+              service:
+                name: users-service-service
+                port:
+                  number: 5001
+          - path: /couriers
+            pathType: Prefix
+            backend:
+              service:
+                name: couriers-service-service
+                port:
+                  number: 5002
+    - host: grafana.bconic.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana-service
+                port:
+                  number: 9000
+    - host: prometheus.bconic.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-service
+                port:
+                  number: 9090
+    - host: pgadmin.bconic.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pgadmin-service
+                port:
+                  number: 5433
+    - host: argocd.bconic.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 443
