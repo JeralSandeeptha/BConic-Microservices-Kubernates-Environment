@@ -26,6 +26,6 @@ spec:
             - name: JWT_SECRET
               value: secret
             - name: USERS_SERVICE_URL
-              value: http://api.bconic.com:5000/gateway/users/api/v1
+              value: http://users-service-service.production.svc.cluster.local:5001/api/v1
           ports:
             - containerPort: 5002
